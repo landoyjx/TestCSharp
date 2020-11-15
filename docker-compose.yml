@@ -1,7 +1,7 @@
 version: '2'
 
 services:
-  MySQL:
+  mysql:
     image: mysql:5.7
     container_name: MySQL
     volumes:
@@ -16,58 +16,42 @@ services:
       localnet:
         ipv4_address: 192.168.20.2
   
-  SiloServer:
-    image: mcr.microsoft.com/dotnet/aspnet:3.1
+  siloserver:
+    build: ./SiloServer 
     container_name: SiloServer
-    volumes:
-      - ./:/app
-    command: /bin/bash -c 'cd /app/ && dotnet run bin/Debug/netcoreapp3.1/SiloServer.dll'
     ports:
       - "11111:11111"
     networks:
       localnet:
         ipv4_address: 192.168.20.3
 
-  BlackListChecker:
-    image: mcr.microsoft.com/dotnet/aspnet:3.1
+  blacklistchecker:
+    build: ./BlackListChecker
     container_name: BlackListChecker
-    volumes:
-      - ./:/app
-    command: /bin/bash -c 'cd /app/ && dotnet run bin/Debug/netcoreapp3.1/BlackListChecker.dll'
     depends_on: 
-      - MySQL
+      - mysql
     networks:
       localnet:
         ipv4_address: 192.168.20.4
 
-  UserServer01:
-    image: mcr.microsoft.com/dotnet/aspnet:3.1
+  userserver01:
+    build: ./UserService
     container_name: UserService01
-    volumes:
-      - ./:/app
-    command: /bin/bash -c 'cd /app/ && dotnet run bin/Debug/netcoreapp3.1/UserService.dll'
     depends_on: 
-      - MySQL
-      - SiloServer
-    environment:
-      - "ASPNETCORE_URLS=http://0.0.0.0:5001"
+      - mysql
+      - siloserver
     ports:
       - "5001:5001"
     networks:
       localnet:
         ipv4_address: 192.168.20.5
 
-  UserServer02:
-    image: mcr.microsoft.com/dotnet/aspnet:3.1
+  userserver02:
+    build: ./UserService
     container_name: UserService02
-    volumes: 
-      - ./:/app
-    command: /bin/bash -c 'cd /app/ && dotnet run bin/Debug/netcoreapp3.1/UserService.dll'
     depends_on: 
-      - MySQL
-      - SiloServer
-    environment:
-      - "ASPNETCORE_URLS=http://0.0.0.0:5001"
+      - mysql
+      - siloserver
     ports:
       - "5002:5001"
     networks:
