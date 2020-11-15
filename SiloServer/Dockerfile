@@ -1,7 +1,16 @@
-FROM mcr.microsoft.com/dotnet/aspnet:3.1
-
+FROM mcr.microsoft.com/dotnet/core/sdk:3.1 AS build-env
 WORKDIR /app
 
-COPY *.* ./
+# Copy csproj and restore as distinct layers
+COPY *.csproj ./
+RUN dotnet restore
 
-CMD ["dotnet" "bin/Debug/netcoreapp3.1/SiloServer.dll"]
+# Copy everything else and build
+COPY . ./
+RUN dotnet publish -c Release -o out
+
+# Build runtime image
+FROM mcr.microsoft.com/dotnet/core/aspnet:3.1
+WORKDIR /app
+COPY --from=build-env /app/out .
+ENTRYPOINT ["dotnet", "SiloServer.dll"]
