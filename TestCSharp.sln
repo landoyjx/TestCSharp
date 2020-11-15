@@ -8,8 +8,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		REQUIREMENT.md = REQUIREMENT.md
 		README.md = README.md
 		docker-compose.yml = docker-compose.yml
-		userdb_2020-11-15.sql = userdb_2020-11-15.sql
-		mysq.config = mysq.config
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UserService", "UserService\UserService.csproj", "{0B1001D1-DED2-4F45-965E-B112CD6E03A8}"

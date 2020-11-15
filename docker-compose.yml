@@ -1,19 +1,62 @@
 version: '2'
 
 services:
-  mysql:
-    restart: always
-    image: mysql
-    container_name: mysql
-    ports:
-      - 3306:3306
+  MySQL:
+    build: ./MySQL
+    container_name: MySQL
+    volumes:
+      - ./MySQL/init:/docker-entrypoint-initdb.d/
     environment:
       - "MYSQL_ROOT_PASSWORD=root"
       - "MYSQL_DATABASE=userdb"
-      - "TZ=Asia/Shanghai
+      - "TZ=Asia/Shanghai"
+    ports:
+      - "3306:3306"
     networks:
       localnet:
         ipv4_address: 192.168.20.2
+  SiloServer:
+    build: ./SiloServer
+    container_name: SiloServer
+    ports:
+      - "11111:11111"
+    networks:
+      localnet:
+        ipv4_address: 192.168.20.3
+  BlackListChecker:
+    build: ./BlackListChecker
+    container_name: BlackListChecker
+    depends_on: 
+      - MySQL
+    networks:
+      localnet:
+        ipv4_address: 192.168.20.4
+  UserServer01:
+    build: ./UserService
+    container_name: UserService01
+    depends_on: 
+      - MySQL
+      - SiloServer
+    environment:
+      - "ASPNETCORE_URLS=http://0.0.0.0:5001"
+    ports:
+      - "5001:5001"
+    networks:
+      localnet:
+        ipv4_address: 192.168.20.5
+  UserServer02:
+    build: ./UserService
+    container_name: UserService02
+    depends_on: 
+      - MySQL
+      - SiloServer
+    environment:
+      - "ASPNETCORE_URLS=http://0.0.0.0:5001"
+    ports:
+      - "5002:5001"
+    networks:
+      localnet:
+        ipv4_address: 192.168.20.6
 
 
 networks:
