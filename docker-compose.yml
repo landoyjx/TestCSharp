@@ -17,7 +17,7 @@ services:
         ipv4_address: 192.168.20.2
   
   SiloServer:
-    image: microsoft/aspnetcore:3.1
+    image: mcr.microsoft.com/dotnet/aspnet:3.1
     container_name: SiloServer
     volumes:
       - ./:/app
@@ -29,7 +29,7 @@ services:
         ipv4_address: 192.168.20.3
 
   BlackListChecker:
-    image: microsoft/aspnetcore:3.1
+    image: mcr.microsoft.com/dotnet/aspnet:3.1
     container_name: BlackListChecker
     volumes:
       - ./:/app
@@ -41,7 +41,7 @@ services:
         ipv4_address: 192.168.20.4
 
   UserServer01:
-    image: microsoft/aspnetcore:3.1
+    image: mcr.microsoft.com/dotnet/aspnet:3.1
     container_name: UserService01
     volumes:
       - ./:/app
@@ -58,7 +58,7 @@ services:
         ipv4_address: 192.168.20.5
 
   UserServer02:
-    image: microsoft/aspnetcore:3.1
+    image: mcr.microsoft.com/dotnet/aspnet:3.1
     container_name: UserService02
     volumes: 
       - ./:/app
