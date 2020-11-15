@@ -2,7 +2,7 @@ version: '2'
 
 services:
   MySQL:
-    build: ./MySQL
+    image: mysql:5.7
     container_name: MySQL
     volumes:
       - ./MySQL/init:/docker-entrypoint-initdb.d/
@@ -15,25 +15,37 @@ services:
     networks:
       localnet:
         ipv4_address: 192.168.20.2
+  
   SiloServer:
-    build: ./SiloServer
+    image: microsoft/aspnetcore:3.1
     container_name: SiloServer
+    volumes:
+      - ./:/app
+    command: /bin/bash -c 'cd /app/ && dotnet run bin/Debug/netcoreapp3.1/SiloServer.dll'
     ports:
       - "11111:11111"
     networks:
       localnet:
         ipv4_address: 192.168.20.3
+
   BlackListChecker:
-    build: ./BlackListChecker
+    image: microsoft/aspnetcore:3.1
     container_name: BlackListChecker
+    volumes:
+      - ./:/app
+    command: /bin/bash -c 'cd /app/ && dotnet run bin/Debug/netcoreapp3.1/BlackListChecker.dll'
     depends_on: 
       - MySQL
     networks:
       localnet:
         ipv4_address: 192.168.20.4
+
   UserServer01:
-    build: ./UserService
+    image: microsoft/aspnetcore:3.1
     container_name: UserService01
+    volumes:
+      - ./:/app
+    command: /bin/bash -c 'cd /app/ && dotnet run bin/Debug/netcoreapp3.1/UserService.dll'
     depends_on: 
       - MySQL
       - SiloServer
@@ -44,9 +56,13 @@ services:
     networks:
       localnet:
         ipv4_address: 192.168.20.5
+
   UserServer02:
-    build: ./UserService
+    image: microsoft/aspnetcore:3.1
     container_name: UserService02
+    volumes: 
+      - ./:/app
+    command: /bin/bash -c 'cd /app/ && dotnet run bin/Debug/netcoreapp3.1/UserService.dll'
     depends_on: 
       - MySQL
       - SiloServer
